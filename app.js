@@ -59,7 +59,7 @@ const promptProject = portfolioData => {
                 if (nameInput){
                     return true;
                 } else {
-                    console.log('Please enter a description of your project!');
+                    console.log('Please enter a description of your project');
                 }
             }
         },
