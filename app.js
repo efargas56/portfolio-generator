@@ -1,7 +1,118 @@
-const profileDataArgs = process.argv.slice(2,process.argv.length);
+// const fs = require('fs')
 
-console.log(profileDataArgs);
-const printProfileData = profileDataArr => {
-    profileDataArr.forEach(profileItem => console.log(profileItem));
+const inquirer = require('inquirer');
+
+const promptUser = () => {
+    return inquirer.prompt([
+        {
+        type: 'input',
+        name: 'name',
+        message: 'What is your name?',
+        validate: nameInput => {
+            if (nameInput){
+                return true;
+            } else {
+                console.log('Please enter your name!');
+            }
+        }
+        },
+        {
+        type: 'input',
+        name: 'Github',
+        message: 'What is your GitHub name?'
+        },
+        {
+        type: 'input',
+        name: 'About Me',
+        message: 'tell me about yourself:'
+        }
+    ]);
 };
-printProfileData(profileDataArgs);
+const promptProject = portfolioData => {
+    // only do do this the first time to prevent overide use if statement
+    if(!portfolioData.projects){
+    portfolioData.projects = [];
+    }
+    console.log(`
+        =================
+        Add a New Project
+        =================
+        `)
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is the name of your project?',
+            validate: nameInput => {
+                if (nameInput){
+                    return true;
+                } else {
+                    console.log('Please enter your project name!');
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'description',
+            message: 'What is your project about? (Required)',
+            validate: nameInput => {
+                if (nameInput){
+                    return true;
+                } else {
+                    console.log('Please enter a description of your project');
+                }
+            }
+        },
+        {
+            type: 'checkbox',
+            name: 'Languages',
+            message: 'What language does your program use?(Check all that apply)',
+            choices: ['javascript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
+        },
+        {
+            type: 'input',
+            name: 'link',
+            message: 'What is the link to your Github Repo? (Required)',
+            validate: nameInput => {
+                if (nameInput){
+                    return true;
+                } else {
+                    console.log('A link to your GitHub repo is required!');
+                }
+            }
+        },
+        {
+            type: 'confirm',
+            name: 'feature',
+            message: 'Would you like to feature this project?',
+            default: false
+        },
+        {
+            type: 'confirm',
+            name: 'confirmAddProject',
+            message: 'Would you like to add another project?',
+            default: false
+        }
+    ])
+    .then(projectData => {
+        portfolioData.projects.push(projectData);
+     if(projectData.confirmAddProject){
+         return promptProject(portfolioData);
+     } else {
+         return portfolioData;
+     }
+});
+}
+promptUser().then(promptProject).then(portfolioData =>{
+    console.log(portfolioData)
+});
+// const generatePage = require('./src/page-template')
+
+// const pageHTML = generatePage(name, github);
+
+
+// fs.writeFile('./index.html', pageHTML, err => {
+//     if (err) throw new Error(err);
+  
+//     console.log('Portfolio complete! Check out index.html to see the output!');
+//   });
